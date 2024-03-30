@@ -47,12 +47,17 @@ router.get("/", async (request, response) => {
 // Route to get one book from the database by id
 router.get("/:id", async (request, response) => {
   try {
+    console.log("Received request params:", request.params); // Log request parameters
     const { id } = request.params;
+    console.log("Received request for book with ID:", id);
     const book = await Book.findById(id);
+    if (!book) {
+      return response.status(404).json({ error: "Book not found" });
+    }
     return response.status(200).json(book);
   } catch (error) {
-    console.log(error.message);
-    response.status(500).send({ message: error.message });
+    console.error("Error retrieving book:", error.message);
+    response.status(500).json({ error: "Internal server error" });
   }
 });
 
